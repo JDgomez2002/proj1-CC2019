@@ -1,14 +1,23 @@
-def shunting_yard(regex):
+from graphviz import Digraph
+
+class Nodo:
+    def __init__(self, valor, der=None, izq=None):
+        self.valor = valor
+        self.der = der
+        self.izq = izq
+
+def shunting_yard(regex, num_de_expresion):
     expresion_postfija = ''
     operadores = ['?', '|', '+', '.', '*']
     pila = []
     regex_formateado = formatear_regex(regex)
     
     indice = 0
-    print("\n----Línea-----")
+    print()
+    print(f"#### Expresion No. {num_de_expresion} ####")
     while indice < len(regex_formateado):
         caracter = regex_formateado[indice]
-        print('Carácter:' + caracter)
+        print(f'Char no.{indice+1}: ' + caracter)
         
         if caracter == '(':
             pila.append(caracter)
@@ -31,7 +40,7 @@ def shunting_yard(regex):
             pila.append(caracter)
         elif caracter == '\\':
             if indice + 1 < len(regex_formateado):
-                print('Carácter escapado:' + regex_formateado[indice + 1])
+                print('Char escapado:' + regex_formateado[indice + 1])
                 expresion_postfija += regex_formateado[indice + 1]
                 indice += 1
         else:
@@ -39,12 +48,12 @@ def shunting_yard(regex):
         
         indice += 1
         
-        print('Pila:' + str(pila))
-        print('Cola:' + expresion_postfija + '\n')
+        print('Stack: ' + str(pila))
+        print('Cola: ' + expresion_postfija + '\n')
     
     while len(pila) > 0:
         expresion_postfija += pila.pop()
-    
+
     return expresion_postfija
 
 def obtener_precedencia(operador):
@@ -152,9 +161,9 @@ def crear_arbol_sintaxis(postfijo):
             pila.append(nuevo_nodo)
         else:
             nuevo_nodo = Nodo(caracter)
-            nuevo_nodo.derecha = pila.pop()
+            nuevo_nodo.der = pila.pop()
             if caracter != '*':
-                nuevo_nodo.izquierda = pila.pop()
+                nuevo_nodo.izq = pila.pop()
             pila.append(nuevo_nodo)
             
     return pila[0] if pila else None
@@ -163,13 +172,13 @@ def graficar_arbol(root, grafo=None):
     if grafo is None:
         grafo = Digraph()
         grafo.node(name=str(id(root)), label=root.valor)
-    if root.izquierda:
-        grafo.node(name=str(id(root.izquierda)), label=root.izquierda.valor)
-        grafo.edge(str(id(root)), str(id(root.izquierda)))
-        graficar_arbol(root.izquierda, grafo)
-    if root.derecha:
-        grafo.node(name=str(id(root.derecha)), label=root.derecha.valor)
-        grafo.edge(str(id(root)), str(id(root.derecha)))
-        graficar_arbol(root.derecha, grafo)
+    if root.izq:
+        grafo.node(name=str(id(root.izq)), label=root.izq.valor)
+        grafo.edge(str(id(root)), str(id(root.izq)))
+        graficar_arbol(root.izq, grafo)
+    if root.der:
+        grafo.node(name=str(id(root.der)), label=root.der.valor)
+        grafo.edge(str(id(root)), str(id(root.der)))
+        graficar_arbol(root.der, grafo)
     return grafo
 

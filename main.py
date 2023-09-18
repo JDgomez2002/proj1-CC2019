@@ -11,8 +11,13 @@ from graphviz import Digraph
 # importar archivos con funciones
 from arbol import *
 from afn import *
+from afd import *
 
 with open("expresiones.txt", 'r') as archivo:
+  # encabezado
+  print("############################")
+  print("Proyecto no.1")
+
   num_de_expresion = 1
 
   for expresion in archivo:
@@ -32,6 +37,14 @@ with open("expresiones.txt", 'r') as archivo:
     afn.estados = EstadoAFN.estados # tomar estados
     afn_graph = graficar_afn(afn.inicio) # graficar AFN
     afn_graph.view(filename=f"AFN {num_de_expresion}",cleanup=True) # crear y mostrar archivo pdf
+
+    alfabeto = obtener_alfabeto(expresion_postfix) # obtiene el alfabeto del afd
+    afd = afn_a_afd(alfabeto, afn) # crear afd con su alfabeto
+    afd.estados = EstadoAFD.estados # obtiene los estados del afd
+    afd_graph = graficar_afd(afd.inicio) # grafica el afd
+    afd_graph.view(filename=f"AFD {num_de_expresion}",cleanup=True) # crear y mostrar archivo pdf
+
+    
 
     print("############################")
 

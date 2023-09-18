@@ -12,6 +12,7 @@ from graphviz import Digraph
 from arbol import *
 from afn import *
 from afd import *
+from minimizacion import *
 
 with open("expresiones.txt", 'r') as archivo:
   # encabezado
@@ -36,15 +37,18 @@ with open("expresiones.txt", 'r') as archivo:
     afn = arbol_a_afn(arbol) # arbol a afn
     afn.estados = EstadoAFN.estados # tomar estados
     afn_graph = graficar_afn(afn.inicio) # graficar AFN
-    afn_graph.view(filename=f"AFN {num_de_expresion}",cleanup=True) # crear y mostrar archivo pdf
+    afn_graph.view(filename=f"AFN {num_de_expresion}", cleanup=True) # crear y mostrar archivo pdf
 
     alfabeto = obtener_alfabeto(expresion_postfix) # obtiene el alfabeto del afd
     afd = afn_a_afd(alfabeto, afn) # crear afd con su alfabeto
     afd.estados = EstadoAFD.estados # obtiene los estados del afd
     afd_graph = graficar_afd(afd.inicio) # grafica el afd
-    afd_graph.view(filename=f"AFD {num_de_expresion}",cleanup=True) # crear y mostrar archivo pdf
+    afd_graph.view(filename=f"AFD {num_de_expresion}", cleanup=True) # crear y mostrar archivo pdf
 
-    
+    # afd_min = afd_minimizado(alfabeto, afd) # minimizar afd
+    # print(afd_min.estados_aceptacion) # imprimir estados de minimizacion
+    # afdmin_graph = graficar_afd(afd_min.estado_inicial) # graficar afd minimizado
+    # afdmin_graph.view(filename=f"AFD min{num_de_expresion}", cleanup=True) # crear y mostrar archivo pdf
 
     print("############################")
 

@@ -140,3 +140,36 @@ def formatear_regex(regex):
         indice += 1
     
     return resultado
+
+
+def crear_arbol_sintaxis(postfijo):
+    pila = []
+    operadores = ['|', '*', '.']
+
+    for caracter in postfijo:
+        if caracter not in operadores:
+            nuevo_nodo = Nodo(caracter)
+            pila.append(nuevo_nodo)
+        else:
+            nuevo_nodo = Nodo(caracter)
+            nuevo_nodo.derecha = pila.pop()
+            if caracter != '*':
+                nuevo_nodo.izquierda = pila.pop()
+            pila.append(nuevo_nodo)
+            
+    return pila[0] if pila else None
+
+def graficar_arbol(root, grafo=None):
+    if grafo is None:
+        grafo = Digraph()
+        grafo.node(name=str(id(root)), label=root.valor)
+    if root.izquierda:
+        grafo.node(name=str(id(root.izquierda)), label=root.izquierda.valor)
+        grafo.edge(str(id(root)), str(id(root.izquierda)))
+        graficar_arbol(root.izquierda, grafo)
+    if root.derecha:
+        grafo.node(name=str(id(root.derecha)), label=root.derecha.valor)
+        grafo.edge(str(id(root)), str(id(root.derecha)))
+        graficar_arbol(root.derecha, grafo)
+    return grafo
+
